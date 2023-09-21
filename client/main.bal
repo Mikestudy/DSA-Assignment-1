@@ -1,6 +1,9 @@
 import ballerina/io;
 import ballerina/http;
 
+const string CONST1 = "";
+const string CONST = "";
+
 type Lecturer record {
     string staffNumber;
     string officeNumber;
@@ -29,7 +32,7 @@ public function main() returns error? {
             lecturer.officeNumber = io:readln("Enter Office Number: ");
             lecturer.staffName = io:readln("Enter Staff Name: ");
             lecturer.title = io:readln("Enter Title: ");
-            string staffNumber = addLecturer();
+            string _ = addLecturers();
             
             
         
