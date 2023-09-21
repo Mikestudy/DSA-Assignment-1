@@ -7,22 +7,22 @@ type Lecturer readonly & record {
     string officeNumber;
     string staffName;
     string title;
-    string[] courses;
+    string courses;
 };
-
+type staffNumber string;
 // Define an in-memory data store for lecturers (replace with a database in production)
-table<Lecturer> key(staffNumber) Lecturers = table[];
+table<Lecturer> key(staffNumber) lecturers = table[];
 
 service /lecturers on new http:Listener(8080) {
 
     resource function get getAllLecturers() returns table<Lecturer> key(staffNumber) {
-        return Lecturers;
+        return lecturers;
     }
 
-    resource function post addLecturer(Lecturer lecturer) returns json {
+    resource function post addLecturer(Lecturer lecturer) returns string {
         // Parse the JSON request and add the lecturer to the data store
         io:println(lecturer);
-        error? err = Lecturers.put(lecturer);
+        error? err = lecturers.put(lecturer);
         if (err is error) {
             return string `Error, ${err.message()}`;
         }
@@ -30,12 +30,15 @@ service /lecturers on new http:Listener(8080) {
     }
     
     resource function get getLecturerByStaffNumber(string staffNumber) returns Lecturer? {
-        Lecturer? lecturer = Lecturers[staffNumber];
-        return lecturer;
+        foreach Lecturer lecturer in lecturers {
+            if (lecturer.staffNumber === staffNumber) {
+                return lecturer;
+            }
+        }
     }
     
     resource function put updateLecturer( Lecturer lecturer) returns json {
-       io:println(Lecturers);
+       io:println(lecturer);
         error? err = put(lecturer);
         if (err is error) {
             return string `Error, ${err.message()}`;
@@ -43,11 +46,11 @@ service /lecturers on new http:Listener(8080) {
         return string `${lecturer.staffNumber} saved successfully`;
     }
     resource function delete deleteLecturerByStaffNumber(string staffNumber) returns json {
-        Lecturers = <table<Lecturer> key(staffNumber)>Lecturers.filter((lecture) => lecture.staffNumber != staffNumber);
+        lecturers = <table<Lecturer> key(staffNumber)>lecturers.filter((lecture) => lecture.staffNumber != staffNumber);
         table<Lecturer> Lectuers1 = table [];
 
         
-        if (Lecturers.length() === Lectuers1.length()) {
+        if (lecturers.length() === Lectuers1.length()) {
             return staffNumber + " not found.";
         }
         return staffNumber + " successfuly deleted";
@@ -60,24 +63,24 @@ service /lecturers on new http:Listener(8080) {
         // }
     }
     
-    resource function get getLecturersByCourse/[string course]() returns Lecturer[] {
-        foreach Lecturer lectuer in Lecturers {
-            if (addlecturer.course === course) {
+    resource function get getLecturersByCourse/[string course]() returns Lecturer|string {
+       foreach Lecturer lecturer in lecturers {
+            if (lecturer.courses === course) {
                 return lecturer;
             }
         }
 
-        return course[];
+        return course + " is invalid";
     }
     
-    resource function get getLecturersByOffice(string office) returns Lecturer[] {
-        Lecturer[] lecturers = [];
-        foreach Lecturer  value in Lecturers {
-            if (office == value.officeNumber) {
-                lecturers.push(value);
+    resource function get getLecturersByOffice/[string office]() returns Lecturer|string {
+        
+        foreach Lecturer  lecturer in lecturers {
+            if (lecturer.officeNumber === office) {
+               return lecturer;
             }
         }
-        return lecturers;
+        return office + " is invalid";
     }
 }
 

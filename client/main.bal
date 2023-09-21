@@ -10,7 +10,7 @@ type Lecturer record {
 };
 
 public function main() returns error? {
-    http:Client lecturerClient = check new ("http://localhost:9090/lecturers");
+    http:Client lecturerClient = check new ("http://localhost:8080/lecturers");
 
     io:println("1. Add a New Lecturer");
     io:println("2. Update Lecturer Information");
@@ -29,16 +29,15 @@ public function main() returns error? {
             lecturer.officeNumber = io:readln("Enter Office Number: ");
             lecturer.staffName = io:readln("Enter Staff Name: ");
             lecturer.title = io:readln("Enter Title: ");
-
-            string staffNumber = addLecturer();
-            lecturer.lecturers = [staffNumber];
+            string staffNumber = addLecturers();
+            
             
         
     check addLecturer(lecturerClient, lecturer);
         }
         "2" => {
-            
-        lecturer.staffNumber = io:readln("Enter staffNumber: ");
+            Lecturer lecturer = {courses: [], officeNumber: "", staffName: "", staffNumber: "", title: ""};
+            lecturer.staffNumber = io:readln("Enter staffNumber: ");
             lecturer.staffName = io:readln("Enter leturer Name ");
             check update(lecturerClient, lecturer);
         
@@ -67,6 +66,10 @@ public function main() returns error? {
             io:println("Invalid Option");
         }
     }
+}
+
+function addLecturers() returns string {
+    return "";
 }
 
 function update(http:Client lecturerClient, any b) returns error {
