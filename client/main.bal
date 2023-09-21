@@ -30,25 +30,20 @@ public function main() returns error? {
             lecturer.staffName = io:readln("Enter Staff Name: ");
             lecturer.title = io:readln("Enter Title: ");
 
-            io:println("Enter Courses (comma-separated): ");
-            string coursesInput = io:readln("Enter Courses: ");
-            lecturer.courses = ballerina/string:split(coursesInput, ",");
+            string staffNumber = addLecturer();
+            lecturer.lecturers = [staffNumber];
             
-            check addLecturer(lecturerClient, lecturer);
+        
+    check addLecturer(lecturerClient, lecturer);
         }
         "2" => {
-            string staffNumber = io:readln("Enter Staff Number: ");
-            Lecturer updatedLecturer = {};
-            updatedLecturer.officeNumber = io:readln("Enter Updated Office Number: ");
-            updatedLecturer.staffName = io:readln("Enter Updated Staff Name: ");
-            updatedLecturer.title = io:readln("Enter Updated Title: ");
-
-            io:println("Enter Updated Courses (comma-separated): ");
-            string updatedCoursesInput = io:readln("Enter Updated Courses: ");
-            updatedLecturer.courses = ballerina/string:split(updatedCoursesInput, ",");
             
-            check updateLecturer(lecturerClient, staffNumber, updatedLecturer);
+        lecturer.staffNumber = io:readln("Enter staffNumber: ");
+            lecturer.staffName = io:readln("Enter leturer Name ");
+            check update(lecturerClient, lecturer);
+        
         }
+
         "3" => {
             string staffNumber = io:readln("Enter Staff Number to Delete: ");
             check deleteLecturer(lecturerClient, staffNumber);
@@ -74,77 +69,84 @@ public function main() returns error? {
     }
 }
 
-function addLecturer(http:Client client, Lecturer lecturer) returns error? {
-    if (client is http:Client) {
-        string payload = check client->/addLecturer.post(lecturer);
+public function addLecturer(http:Client http, Lecturer lecturer) returns error? {
+    if (http is http:Client) {
+        string payload = check http->/addLecturer.post(lecturer);
         io:println(payload);
     }
 }
 
-function updateLecturer(http:Client client, string staffNumber, Lecturer lecturer) returns error? {
-    if (client is http:Client) {
-        string payload = check client->/updateLecturer.put(staffNumber, lecturer);
+public function updateLecturer(http:Client http, string staffNumber, Lecturer lecturer) returns error? {
+    if (http is http:Client) {
+        string payload = check http->/updateLecturer.put(staffNumber);
         io:println(payload);
     }
 }
 
-function deleteLecturer(http:Client client, string staffNumber) returns error? {
-    if (client is http:Client) {
-        string payload = check client->/deleteLecturer.delete(staffNumber);
+public function deleteLecturer(http:Client http, string staffNumber) returns error? {
+    if (http is http:Client) {
+        string payload = check http->/deleteLecturer.delete(staffNumber);
         io:println(payload);
     }
 }
 
-function getAllLecturers(http:Client client) returns error? {
-    if (client is http:Client) {
-        Lecturer[] lecturers = check client->/getAllLecturers.get();
+public function getAllLecturers(http:Client http) returns error? {
+    if (http is http:Client) {
+        Lecturer[] lecturers = check http->/getAllLecturers.get();
         foreach var lecturer in lecturers {
             io:println("--------------------------");
-            io:println("Staff Number: " + lecturer.staffNumber);
-            io:println("Office Number: " + lecturer.officeNumber);
-            io:println("Staff Name: " + lecturer.staffName);
-            io:println("Title: " + lecturer.title);
-            io:println("Courses: " + lecturer.courses);
+            io:println("Staff Number: " , lecturer.staffNumber);
+            io:println("Office Number: " , lecturer.officeNumber);
+            io:println("Staff Name: " , lecturer.staffName);
+            io:println("Title: " , lecturer.title);
+            io:println("Courses: " , lecturer.courses);
         }
     }
 }
 
-function getLecturerByStaffNumber(http:Client client, string staffNumber) returns error? {
-    if (client is http:Client) {
-        Lecturer lecturer = check client->/getLecturerByStaffNumber.get(staffNumber);
+public function getLecturerByStaffNumber(http:Client http, string staffNumber) returns error? {
+    if (http is http:Client) {
+        Lecturer lecturer = check http->/getLecturerByStaffNumber.get(staffNumber = staffNumber);
         io:println("--------------------------");
-        io:println("Staff Number: " + lecturer.staffNumber);
-        io:println("Office Number: " + lecturer.officeNumber);
-        io:println("Staff Name: " + lecturer.staffName);
-        io:println("Title: " + lecturer.title);
-        io:println("Courses: " + lecturer.courses);
+        io:println("Staff Number: " , lecturer.staffNumber);
+        io:println("Office Number: " , lecturer.officeNumber);
+        io:println("Staff Name: " , lecturer.staffName);
+        io:println("Title: " , lecturer.title);
+        io:println("Courses: " , lecturer.courses);
     }
 }
 
-function getLecturersByCourse(http:Client client, string course) returns error? {
-    if (client is http:Client) {
-        Lecturer[] lecturers = check client->/getLecturersByCourse.get(course);
+public function getLecturersByCourse(http:Client http, string course) returns error? {
+    if (http is http:Client) {
+        Lecturer[] lecturers = check http->/getLecturersByCourse.get(course = course);
         foreach var lecturer in lecturers {
             io:println("--------------------------");
-            io:println("Staff Number: " + lecturer.staffNumber);
-            io:println("Office Number: " + lecturer.officeNumber);
-            io:println("Staff Name: " + lecturer.staffName);
-            io:println("Title: " + lecturer.title);
-            io:println("Courses: " + lecturer.courses);
+            io:println("Staff Number: " , lecturer.staffNumber);
+            io:println("Office Number: " , lecturer.officeNumber);
+            io:println("Staff Name: " , lecturer.staffName);
+            io:println("Title: " , lecturer.title);
+            io:println("Courses: " , lecturer.courses);
         }
     }
 }
 
-function getLecturersByOffice(http:Client client, string office) returns error? {
-    if (client is http:Client) {
-        Lecturer[] lecturers = check client->/getLecturersByOffice.get(office);
+public function getLecturersByOffice(http:Client http, string office) returns error? {
+    if (http is http:Client) {
+        Lecturer[] lecturers = check http->/getLecturersByOffice.get(office = office);
         foreach var lecturer in lecturers {
             io:println("--------------------------");
-            io:println("Staff Number: " + lecturer.staffNumber);
-            io:println("Office Number: " + lecturer.officeNumber);
-            io:println("Staff Name: " + lecturer.staffName);
-            io:println("Title: " + lecturer.title);
-            io:println("Courses: " + lecturer.courses);
+            io:println("Staff Number: " , lecturer.staffNumber);
+            io:println("Office Number: " , lecturer.officeNumber);
+            io:println("Staff Name: " , lecturer.staffName);
+            io:println("Title: " , lecturer.title);
+            io:println("Courses: " , lecturer.courses);
         }
     }
 }
+
+
+
+
+
+
+

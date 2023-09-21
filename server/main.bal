@@ -34,38 +34,45 @@ service /lecturers on new http:Listener(8080) {
         return lecturer;
     }
     
-    resource function put updateLecturer(string staffNumber, Lecturer lecturer) returns json {
-        Lecturer? existingLecturer = Lecturers[staffNumber];
-        if (existingLecturer == null) {
-            return string `Lecturer with staff number ${staffNumber} not found`;
+    resource function put updateLecturer( Lecturer lecturer) returns json {
+       io:println(Lecturers);
+        error? err = lecturers.put(lecturer);
+        if (err is error) {
+            return string `Error, ${err.message()}`;
         }
-        existingLecturer = lecturer;
-        Lecturers[staffNumber] = existingLecturer;
-        return string `Lecturer with staff number ${staffNumber} updated successfully`;
+        return string `${lecturer.staffNumber} saved successfully`;
     }
-    
     resource function delete deleteLecturerByStaffNumber(string staffNumber) returns json {
-        if (Lecturers.contains(staffNumber)) {
-            Lecturers.remove(staffNumber);
-            return string `Lecturer with staff number ${staffNumber} deleted successfully`;
-        } else {
-            return string `Lecturer with staff number ${staffNumber} not found`;
+        Lecturers = <table<Lecturer> key(staffNumber)>Lecturers.filter((lecture) => lecture.staffNumber != staffNumber);
+        table<Lecturer> Lectuers1 = table [];
+
+        
+        if (Lecturers.length() === Lectuers1.length()) {
+            return staffNumber + " not found.";
         }
+        return staffNumber + " successfuly deleted";
+        
+        // if (Lecturers(staffNumber)) {
+        //     Lecturers.remove(staffNumber);
+        //     return string `Lecturer with staff number ${staffNumber} deleted successfully`;
+        // } else {
+        //     return string `Lecturer with staff number ${staffNumber} not found`;
+        // }
     }
     
-    resource function get getLecturersByCourse(string course) returns Lecturer[] {
-        Lecturer[] lecturers = [];
-        foreach key, value in Lecturers {
-            if (course in value.courses) {
-                lecturers.push(value);
+    resource function get getLecturersByCourse/[string course]() returns Lecturer[] {
+        foreach Lecturer lectuer in Lecturers {
+            if (lecturer.course === course) {
+                return lecturer;
             }
         }
-        return lecturers;
+
+        return course + " is invalid";
     }
     
     resource function get getLecturersByOffice(string office) returns Lecturer[] {
         Lecturer[] lecturers = [];
-        foreach key, value in Lecturers {
+        foreach Lecturer  value in Lecturers {
             if (office == value.officeNumber) {
                 lecturers.push(value);
             }
@@ -73,3 +80,8 @@ service /lecturers on new http:Listener(8080) {
         return lecturers;
     }
 }
+
+
+
+
+
