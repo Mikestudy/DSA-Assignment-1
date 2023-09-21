@@ -10,7 +10,7 @@ type Lecturer record {
 };
 
 public function main() returns error? {
-    http:Client lecturerClient = check new ("http://localhost:8080/lecturers");
+    http:Client lecturerClient = check new ("http://localhost:8080/lecturer");
 
     io:println("1. Add a New Lecturer");
     io:println("2. Update Lecturer Information");

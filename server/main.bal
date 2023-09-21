@@ -2,14 +2,17 @@ import ballerina/http;
 import ballerina/io;
 
 // Define a record type for Lecturer
-type Lecturer readonly & record {
+type Lecturer readonly & Record;
+type staffNumber string;
+
+type Record record {
     string staffNumber;
     string officeNumber;
     string staffName;
     string title;
     string courses;
 };
-type staffNumber string;
+
 // Define an in-memory data store for lecturers (replace with a database in production)
 table<Lecturer> key(staffNumber) lecturers = table[];
 
