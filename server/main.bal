@@ -36,7 +36,7 @@ service /lecturers on new http:Listener(8080) {
     
     resource function put updateLecturer( Lecturer lecturer) returns json {
        io:println(Lecturers);
-        error? err = lecturers.put(lecturer);
+        error? err = put(lecturer);
         if (err is error) {
             return string `Error, ${err.message()}`;
         }
@@ -62,12 +62,12 @@ service /lecturers on new http:Listener(8080) {
     
     resource function get getLecturersByCourse/[string course]() returns Lecturer[] {
         foreach Lecturer lectuer in Lecturers {
-            if (lecturer.course === course) {
+            if (addlecturer.course === course) {
                 return lecturer;
             }
         }
 
-        return course + " is invalid";
+        return course[];
     }
     
     resource function get getLecturersByOffice(string office) returns Lecturer[] {
@@ -79,6 +79,10 @@ service /lecturers on new http:Listener(8080) {
         }
         return lecturers;
     }
+}
+
+function put(Lecturer r) returns error? {
+    return ();
 }
 
 

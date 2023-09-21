@@ -24,7 +24,7 @@ public function main() returns error? {
 
     match option {
         "1" => {
-            Lecturer lecturer = {};
+            Lecturer lecturer = {courses: [], officeNumber: "", staffName: "", staffNumber: "", title: ""};
             lecturer.staffNumber = io:readln("Enter Staff Number: ");
             lecturer.officeNumber = io:readln("Enter Office Number: ");
             lecturer.staffName = io:readln("Enter Staff Name: ");
@@ -67,6 +67,10 @@ public function main() returns error? {
             io:println("Invalid Option");
         }
     }
+}
+
+function update(http:Client lecturerClient, any b) returns error {
+    return error("");
 }
 
 public function addLecturer(http:Client http, Lecturer lecturer) returns error? {
